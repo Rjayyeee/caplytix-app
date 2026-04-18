@@ -312,25 +312,31 @@ def is_allowed_user() -> bool:
 def render_landing_page():
     logo_path = get_logo_path()
     logo_html = ""
+
     if logo_path:
         logo_b64 = img_file_to_base64(logo_path)
-        logo_html = f'<img src="data:image/png;base64,{logo_b64}" class="ca-logo" style="max-width:420px;display:block;margin:0 auto 1rem auto;" />'
+        logo_html = f"""
+        <div class="ca-logo-container">
+            <img src="data:image/png;base64,{logo_b64}" class="ca-logo" />
+        </div>
+        """
 
     st.markdown(
         f"""
-        <div class="ca-landing-outer">
+        <div class="ca-landing-shell">
             <div class="ca-landing-card">
                 {logo_html}
                 <div class="ca-tagline">{APP_TAGLINE}</div>
+                <div class="ca-enter-inline">CLICK TO ENTER</div>
             </div>
         </div>
         """,
         unsafe_allow_html=True,
     )
 
-    col1, col2, col3 = st.columns([1, 2, 1])
-    with col2:
-        if st.button("ENTER THE ARENA", key="landing_enter", use_container_width=True):
+    left, center, right = st.columns([1.2, 1.6, 1.2])
+    with center:
+        if st.button("CLICK TO ENTER", key="landing_enter_btn", use_container_width=True):
             try:
                 st.query_params["view"] = "login"
             except Exception:
@@ -340,60 +346,21 @@ def render_landing_page():
 
 def render_login_page():
     logo_path = get_logo_path()
-    logo_b64_tag = ""
+    logo_html = ""
+
     if logo_path:
         logo_b64 = img_file_to_base64(logo_path)
-        logo_b64_tag = f'<img src="data:image/png;base64,{logo_b64}" class="ca-logo" style="max-width:320px;display:block;margin:0 auto 1rem auto;" />'
+        logo_html = f"""
+        <div class="ca-logo-container">
+            <img src="data:image/png;base64,{logo_b64}" class="ca-logo" />
+        </div>
+        """
 
     st.markdown(
         f"""
-        <style>
-        .ca-login-shell {{
-            min-height: 60vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding-bottom: 0.5rem;
-        }}
-        .ca-login-card {{
-            width: 100%;
-            max-width: 760px;
-            text-align: center;
-            padding: 2rem 1.5rem 1.6rem 1.5rem;
-            border-radius: 30px;
-            background:
-                radial-gradient(circle at center, rgba(126,232,255,0.06), transparent 24%),
-                linear-gradient(135deg, rgba(3,10,24,0.98), rgba(6,18,42,0.95));
-            border: 1px solid rgba(126,232,255,0.10);
-            box-shadow: 0 18px 50px rgba(0,0,0,0.40);
-        }}
-        .ca-login-title {{
-            color: #eef4ff;
-            font-size: 2.5rem !important;
-            font-weight: 900 !important;
-            letter-spacing: 0.08em !important;
-            margin-top: 0.25rem;
-            margin-bottom: 0.5rem;
-        }}
-        div[data-testid="stHorizontalBlock"] {{
-            margin-top: -1.5rem !important;
-        }}
-        div[data-testid="stVerticalBlock"] .stButton {{
-            margin-top: 0 !important;
-            margin-bottom: 0 !important;
-            padding-top: 0 !important;
-            padding-bottom: 0 !important;
-        }}
-        div[data-testid="stVerticalBlock"] .stButton:last-of-type > button {{
-            color: #ffffff !important;
-            font-weight: 700 !important;
-            text-transform: none !important;
-            letter-spacing: 0.03em !important;
-        }}
-        </style>
         <div class="ca-login-shell">
             <div class="ca-login-card">
-                {logo_b64_tag}
+                {logo_html}
                 <div class="ca-tagline">{APP_TAGLINE}</div>
                 <div class="ca-login-title">PRIVATE ACCESS</div>
                 <div class="ca-login-subtitle">
@@ -406,84 +373,9 @@ def render_login_page():
     )
 
     left, center, right = st.columns([1.15, 1.7, 1.15])
+
     with center:
-        components.html(
-            """
-            <style>
-            * { margin: 0; padding: 0; box-sizing: border-box; }
-            body {
-                background: transparent;
-                overflow: visible;
-                padding-top: 4px;
-            }
-            .google-btn {
-                width: 100%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 0.35rem;
-                background: linear-gradient(180deg, rgba(10,24,50,0.95), rgba(4,12,28,0.95));
-                border: 1px solid rgba(126,232,255,0.20);
-                border-radius: 14px;
-                padding: 0.7rem 1rem;
-                cursor: pointer;
-                box-shadow: 0 8px 20px rgba(0,0,0,0.22);
-                font-family: Arial, sans-serif;
-                font-size: 1rem;
-                font-weight: 700;
-                color: #eef4ff;
-                transition: border-color 0.2s ease, box-shadow 0.2s ease;
-                text-transform: none;
-                letter-spacing: 0.01em;
-            }
-            .google-btn:hover {
-                border-color: rgba(126,232,255,0.35);
-                box-shadow: 0 0 0 1px rgba(126,232,255,0.05), 0 10px 24px rgba(0,0,0,0.30);
-            }
-            .g-word {
-                font-size: 1.05rem;
-                font-weight: 900;
-                font-family: Arial, sans-serif;
-                letter-spacing: 0.02em;
-            }
-            .g-blue   { color: #4285F4; }
-            .g-red    { color: #EA4335; }
-            .g-yellow { color: #FBBC05; }
-            .g-green  { color: #34A853; }
-            </style>
-
-            <div class="google-btn" id="gBtn">
-                Log in with&nbsp;
-                <span class="g-word">
-                    <span class="g-blue">G</span><span class="g-red">o</span><span class="g-yellow">o</span><span class="g-blue">g</span><span class="g-green">l</span><span class="g-red">e</span>
-                </span>
-            </div>
-
-            <script>
-            document.getElementById('gBtn').addEventListener('click', function() {
-                Array.from(window.parent.document.querySelectorAll('button')).forEach(b => {
-                    if (b.innerText.trim() === 'TRIGGER_GOOGLE') b.click();
-                });
-            });
-            const hide = () => {
-                Array.from(window.parent.document.querySelectorAll('button')).forEach(b => {
-                    if (b.innerText.trim() === 'TRIGGER_GOOGLE') {
-                        b.style.setProperty('display', 'none', 'important');
-                        b.style.setProperty('visibility', 'hidden', 'important');
-                        b.style.setProperty('height', '0', 'important');
-                        b.style.setProperty('overflow', 'hidden', 'important');
-                        b.style.setProperty('margin', '0', 'important');
-                        b.style.setProperty('padding', '0', 'important');
-                    }
-                });
-            };
-            [0, 100, 300, 600, 1000, 2000].forEach(t => setTimeout(hide, t));
-            </script>
-            """,
-            height=52,
-        )
-
-        if st.button("TRIGGER_GOOGLE", key="google_login_btn", use_container_width=True):
+        if st.button("Log in with Google", use_container_width=True, key="google_login_btn"):
             st.login()
             st.stop()
 
