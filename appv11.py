@@ -349,7 +349,7 @@ def render_login_page():
         f"""
         <style>
         .ca-login-shell {{
-            min-height: 60vh;
+            min-height: 80vh;
             display: flex;
             align-items: center;
             justify-content: center;
