@@ -761,6 +761,10 @@ def inject_global_styles():
             .ca-sidebar-logo-full {
                 max-width: 160px;
             }
+     /* REMOVE Streamlit top header */
+         header {
+                display: none !important;
+        }
         }
         </style>
         """,
