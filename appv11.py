@@ -530,7 +530,7 @@ def inject_global_styles():
         }
 
         .block-container {
-            padding-top: 1rem;
+            padding-top: 3rem;
             padding-bottom: 2rem;
             max-width: 1500px;
         }
