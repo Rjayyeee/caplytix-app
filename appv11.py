@@ -312,31 +312,25 @@ def is_allowed_user() -> bool:
 def render_landing_page():
     logo_path = get_logo_path()
     logo_html = ""
-
     if logo_path:
         logo_b64 = img_file_to_base64(logo_path)
-        logo_html = f"""
-        <div class="ca-logo-container">
-            <img src="data:image/png;base64,{logo_b64}" class="ca-logo" />
-        </div>
-        """
+        logo_html = f'<img src="data:image/png;base64,{logo_b64}" class="ca-logo" style="max-width:420px;display:block;margin:0 auto 1rem auto;" />'
 
     st.markdown(
         f"""
-        <div class="ca-landing-shell">
+        <div class="ca-landing-outer">
             <div class="ca-landing-card">
                 {logo_html}
                 <div class="ca-tagline">{APP_TAGLINE}</div>
-                <div class="ca-enter-inline">CLICK TO ENTER</div>
             </div>
         </div>
         """,
         unsafe_allow_html=True,
     )
 
-    left, center, right = st.columns([1.2, 1.6, 1.2])
-    with center:
-        if st.button("CLICK TO ENTER", key="landing_enter_btn", use_container_width=True):
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        if st.button("ENTER THE ARENA", key="landing_enter", use_container_width=True):
             try:
                 st.query_params["view"] = "login"
             except Exception:
@@ -346,21 +340,96 @@ def render_landing_page():
 
 def render_login_page():
     logo_path = get_logo_path()
-    logo_html = ""
-
+    logo_b64_tag = ""
     if logo_path:
         logo_b64 = img_file_to_base64(logo_path)
-        logo_html = f"""
-        <div class="ca-logo-container">
-            <img src="data:image/png;base64,{logo_b64}" class="ca-logo" />
-        </div>
-        """
+        logo_b64_tag = f'<img src="data:image/png;base64,{logo_b64}" class="ca-logo" style="max-width:320px;display:block;margin:0 auto 1rem auto;" />'
 
     st.markdown(
         f"""
+        <style>
+        .ca-login-shell {{
+            min-height: 60vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-bottom: 0.5rem;
+        }}
+        .ca-login-card {{
+            width: 100%;
+            max-width: 760px;
+            text-align: center;
+            padding: 2rem 1.5rem 1.6rem 1.5rem;
+            border-radius: 30px;
+            background:
+                radial-gradient(circle at center, rgba(126,232,255,0.06), transparent 24%),
+                linear-gradient(135deg, rgba(3,10,24,0.98), rgba(6,18,42,0.95));
+            border: 1px solid rgba(126,232,255,0.10);
+            box-shadow: 0 18px 50px rgba(0,0,0,0.40);
+        }}
+        .ca-login-title {{
+            color: #eef4ff;
+            font-size: 2.5rem !important;
+            font-weight: 900 !important;
+            letter-spacing: 0.08em !important;
+            margin-top: 0.25rem;
+            margin-bottom: 0.5rem;
+        }}
+        .ca-login-subtitle {{
+            color: #adc1e3;
+            font-size: 0.98rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }}
+
+        /* tighten button spacing only on login page */
+        div[data-testid="stHorizontalBlock"] {{
+            margin-top: -1.5rem !important;
+        }}
+        div[data-testid="stVerticalBlock"] .stButton {{
+            margin-top: 0 !important;
+            margin-bottom: 0 !important;
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+        }}
+
+        /* Google login button look */
+        div[data-testid="stButton"] button[kind="secondary"],
+        div[data-testid="stButton"] button[kind="primary"] {{
+            text-transform: none !important;
+        }}
+
+        div[data-testid="stButton"] button[data-testid="stBaseButton-secondary"],
+        div[data-testid="stButton"] button[data-testid="stBaseButton-primary"] {{
+            background: linear-gradient(180deg, rgba(10,24,50,0.95), rgba(4,12,28,0.95)) !important;
+            border: 1px solid rgba(126,232,255,0.20) !important;
+            border-radius: 14px !important;
+            padding: 0.7rem 1rem !important;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.22) !important;
+            color: #eef4ff !important;
+            font-size: 1rem !important;
+            font-weight: 700 !important;
+            letter-spacing: 0.01em !important;
+        }}
+
+        div[data-testid="stButton"] button[data-testid="stBaseButton-secondary"]:hover,
+        div[data-testid="stButton"] button[data-testid="stBaseButton-primary"]:hover {{
+            border-color: rgba(126,232,255,0.35) !important;
+            box-shadow: 0 0 0 1px rgba(126,232,255,0.05), 0 10px 24px rgba(0,0,0,0.30) !important;
+        }}
+
+        /* Back button text */
+        div[data-testid="stVerticalBlock"] .stButton:last-of-type > button {{
+            color: #ffffff !important;
+            font-weight: 700 !important;
+            text-transform: none !important;
+            letter-spacing: 0.03em !important;
+        }}
+        </style>
+
         <div class="ca-login-shell">
             <div class="ca-login-card">
-                {logo_html}
+                {logo_b64_tag}
                 <div class="ca-tagline">{APP_TAGLINE}</div>
                 <div class="ca-login-title">PRIVATE ACCESS</div>
                 <div class="ca-login-subtitle">
@@ -373,9 +442,8 @@ def render_login_page():
     )
 
     left, center, right = st.columns([1.15, 1.7, 1.15])
-
     with center:
-        if st.button("Log in with Google", use_container_width=True, key="google_login_btn"):
+        if st.button("Log in with Google", key="google_login_btn", use_container_width=True):
             st.login()
             st.stop()
 
@@ -385,8 +453,6 @@ def render_login_page():
             except Exception:
                 st.experimental_set_query_params(view="landing")
             st.rerun()
-
-
 # -----------------------------
 # Global styles
 # -----------------------------
