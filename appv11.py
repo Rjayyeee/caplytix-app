@@ -375,14 +375,6 @@ def render_login_page():
             margin-top: 0.25rem;
             margin-bottom: 0.5rem;
         }}
-        .ca-login-subtitle {{
-            color: #adc1e3;
-            font-size: 0.98rem;
-            line-height: 1.6;
-            margin-bottom: 1rem;
-        }}
-
-        /* tighten button spacing only on login page */
         div[data-testid="stHorizontalBlock"] {{
             margin-top: -1.5rem !important;
         }}
@@ -392,33 +384,6 @@ def render_login_page():
             padding-top: 0 !important;
             padding-bottom: 0 !important;
         }}
-
-        /* Google login button look */
-        div[data-testid="stButton"] button[kind="secondary"],
-        div[data-testid="stButton"] button[kind="primary"] {{
-            text-transform: none !important;
-        }}
-
-        div[data-testid="stButton"] button[data-testid="stBaseButton-secondary"],
-        div[data-testid="stButton"] button[data-testid="stBaseButton-primary"] {{
-            background: linear-gradient(180deg, rgba(10,24,50,0.95), rgba(4,12,28,0.95)) !important;
-            border: 1px solid rgba(126,232,255,0.20) !important;
-            border-radius: 14px !important;
-            padding: 0.7rem 1rem !important;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.22) !important;
-            color: #eef4ff !important;
-            font-size: 1rem !important;
-            font-weight: 700 !important;
-            letter-spacing: 0.01em !important;
-        }}
-
-        div[data-testid="stButton"] button[data-testid="stBaseButton-secondary"]:hover,
-        div[data-testid="stButton"] button[data-testid="stBaseButton-primary"]:hover {{
-            border-color: rgba(126,232,255,0.35) !important;
-            box-shadow: 0 0 0 1px rgba(126,232,255,0.05), 0 10px 24px rgba(0,0,0,0.30) !important;
-        }}
-
-        /* Back button text */
         div[data-testid="stVerticalBlock"] .stButton:last-of-type > button {{
             color: #ffffff !important;
             font-weight: 700 !important;
@@ -426,7 +391,6 @@ def render_login_page():
             letter-spacing: 0.03em !important;
         }}
         </style>
-
         <div class="ca-login-shell">
             <div class="ca-login-card">
                 {logo_b64_tag}
@@ -443,7 +407,83 @@ def render_login_page():
 
     left, center, right = st.columns([1.15, 1.7, 1.15])
     with center:
-        if st.button("Log in with Google", key="google_login_btn", use_container_width=True):
+        components.html(
+            """
+            <style>
+            * { margin: 0; padding: 0; box-sizing: border-box; }
+            body {
+                background: transparent;
+                overflow: visible;
+                padding-top: 4px;
+            }
+            .google-btn {
+                width: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 0.35rem;
+                background: linear-gradient(180deg, rgba(10,24,50,0.95), rgba(4,12,28,0.95));
+                border: 1px solid rgba(126,232,255,0.20);
+                border-radius: 14px;
+                padding: 0.7rem 1rem;
+                cursor: pointer;
+                box-shadow: 0 8px 20px rgba(0,0,0,0.22);
+                font-family: Arial, sans-serif;
+                font-size: 1rem;
+                font-weight: 700;
+                color: #eef4ff;
+                transition: border-color 0.2s ease, box-shadow 0.2s ease;
+                text-transform: none;
+                letter-spacing: 0.01em;
+            }
+            .google-btn:hover {
+                border-color: rgba(126,232,255,0.35);
+                box-shadow: 0 0 0 1px rgba(126,232,255,0.05), 0 10px 24px rgba(0,0,0,0.30);
+            }
+            .g-word {
+                font-size: 1.05rem;
+                font-weight: 900;
+                font-family: Arial, sans-serif;
+                letter-spacing: 0.02em;
+            }
+            .g-blue   { color: #4285F4; }
+            .g-red    { color: #EA4335; }
+            .g-yellow { color: #FBBC05; }
+            .g-green  { color: #34A853; }
+            </style>
+
+            <div class="google-btn" id="gBtn">
+                Log in with&nbsp;
+                <span class="g-word">
+                    <span class="g-blue">G</span><span class="g-red">o</span><span class="g-yellow">o</span><span class="g-blue">g</span><span class="g-green">l</span><span class="g-red">e</span>
+                </span>
+            </div>
+
+            <script>
+            document.getElementById('gBtn').addEventListener('click', function() {
+                Array.from(window.parent.document.querySelectorAll('button')).forEach(b => {
+                    if (b.innerText.trim() === 'TRIGGER_GOOGLE') b.click();
+                });
+            });
+            const hide = () => {
+                Array.from(window.parent.document.querySelectorAll('button')).forEach(b => {
+                    if (b.innerText.trim() === 'TRIGGER_GOOGLE') {
+                        b.style.setProperty('display', 'none', 'important');
+                        b.style.setProperty('visibility', 'hidden', 'important');
+                        b.style.setProperty('height', '0', 'important');
+                        b.style.setProperty('overflow', 'hidden', 'important');
+                        b.style.setProperty('margin', '0', 'important');
+                        b.style.setProperty('padding', '0', 'important');
+                    }
+                });
+            };
+            [0, 100, 300, 600, 1000, 2000].forEach(t => setTimeout(hide, t));
+            </script>
+            """,
+            height=52,
+        )
+
+        if st.button("TRIGGER_GOOGLE", key="google_login_btn", use_container_width=True):
             st.login()
             st.stop()
 
@@ -453,6 +493,8 @@ def render_login_page():
             except Exception:
                 st.experimental_set_query_params(view="landing")
             st.rerun()
+
+
 # -----------------------------
 # Global styles
 # -----------------------------
