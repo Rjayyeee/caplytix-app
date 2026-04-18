@@ -534,6 +534,10 @@ def inject_global_styles():
             padding-bottom: 2rem;
             max-width: 1500px;
         }
+        
+        header [data-testid="stToolbar"] {
+            display: none !important;
+        }
 
         section[data-testid="stSidebar"] {
             background: linear-gradient(180deg, #000000 0%, #020914 50%, #041125 100%);
