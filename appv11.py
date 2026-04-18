@@ -761,10 +761,32 @@ def inject_global_styles():
             .ca-sidebar-logo-full {
                 max-width: 160px;
             }
-     /* REMOVE Streamlit top header */
-         header {
-                display: none !important;
-        }
+     /* Hide Streamlit chrome */
+header,
+[data-testid="stHeader"],
+[data-testid="stToolbar"],
+[data-testid="stDecoration"],
+[data-testid="stStatusWidget"] {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    min-height: 0 !important;
+}
+
+/* Remove the top inset left behind */
+.stApp,
+[data-testid="stAppViewContainer"],
+.main,
+section.main,
+.block-container {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+}
+
+/* Optional: keep your own breathing room under the removed bar */
+.block-container {
+    padding-top: 2rem !important;
+}
         }
         </style>
         """,
